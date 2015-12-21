@@ -69,6 +69,7 @@ namespace spaar.Mods.KeyboardShortcuts
     private void Update()
     {
       if (!Game.AddPiece) return;
+      if (Game.IsSimulating) return;
 
       // Debug code helpful for filling out blockIndices table
       //if (Input.GetKeyDown(KeyCode.N))
