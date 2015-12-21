@@ -12,6 +12,7 @@ namespace spaar.Mods.KeyboardShortcuts
 
     public override Version Version { get; } = new Version(1, 0, 0, 0);
     public override string VersionExtra { get; } = "";
+    public override string BesiegeVersion { get; } = "v0.23";
 
     public override bool CanBeUnloaded { get; } = true;
     public override bool Preload { get; } = false;
