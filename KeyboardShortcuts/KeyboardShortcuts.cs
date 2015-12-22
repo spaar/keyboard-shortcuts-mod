@@ -124,18 +124,23 @@ namespace spaar.Mods.KeyboardShortcuts
         currentTab = InternalToOrderedTabIndex(tabController.activeTab);
         tabController.OpenTab(tabIndices[mod(--currentTab, tabIndices.Length)]);
       }
-      
-      for (int i = 0; i < 9; i++)
+
+      // Don't react to block shortcuts when block settings are open to prevent
+      // typing a slider value changing what block is selected
+      if (!Game.BlockInfoController.menuHolder.gameObject.activeSelf)
       {
-        if (blockKeys[i].Pressed())
+        for (int i = 0; i < 9; i++)
         {
-          var index = blockIndices[
-            InternalToOrderedTabIndex(tabController.activeTab)][i];
-          if (index != -1)
+          if (blockKeys[i].Pressed())
           {
-            tabController.tabs[tabController.activeTab]
-              .GetComponent<BlockMenuControl>()
-              .buttons[index].Set();
+            var index = blockIndices[
+              InternalToOrderedTabIndex(tabController.activeTab)][i];
+            if (index != -1)
+            {
+              tabController.tabs[tabController.activeTab]
+                .GetComponent<BlockMenuControl>()
+                .buttons[index].Set();
+            }
           }
         }
       }
