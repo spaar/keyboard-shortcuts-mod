@@ -57,12 +57,12 @@ namespace spaar.Mods.KeyboardShortcuts
       blockIndices = new int[7][]
        {
         new int[9] {  0,  1,  2,  4,  3, -1, -1, -1, -1 }, // Fundamentals
-        new int[9] {  0,  1,  7,  2,  3,  4,  5,  8,  6 }, // Blocks
+        new int[9] {  0,  1,  2,  3,  4,  5,  6,  7,  8 }, // Blocks
         new int[9] { 11, 10,  0,  6,  4,  2,  7,  8,  1 }, // Locomotion
         new int[9] {  1,  2,  4,  3,  5,  7,  8,  0, -1 }, // Mechanical
-        new int[9] {  0,  1,  4, 13,  5,  2, 14,  6, 11 }, // Weaponry
+        new int[9] {  0,  1,  4, 12,  5,  2, 13,  6, 10 }, // Weaponry
         new int[9] {  0,  1,  6,  2,  3,  5,  4, -1, -1 }, // Flight
-        new int[9] {  0,  1,  2,  3, -1, -1, -1, -1, -1 }, // Armour
+        new int[9] {  0,  1,  2,  3,  4,  5, -1, -1, -1 }, // Armour
       };
     }
 
@@ -91,13 +91,13 @@ namespace spaar.Mods.KeyboardShortcuts
           var myName = hit.transform.GetComponent<MyBlockInfo>().blockName;
           for (int i = 0; i < Game.AddPiece.blockTypes.Length; i++)
           {
-            var type = Game.AddPiece.blockTypes[i];
+            var type = Game.MachineObjectTracker.AllPrefabs[i];
             if ((type.GetComponent<MyBlockInfo>()
               && type.GetComponent<MyBlockInfo>().blockName == myName)
               || (type.GetComponentInChildren<MyBlockInfo>()
               && type.GetComponentInChildren<MyBlockInfo>().blockName == myName))
             {
-              AddPiece.currentBlockType = i;
+              Game.AddPiece.SetBlockType(i);
               break;
             }
           }
@@ -110,7 +110,10 @@ namespace spaar.Mods.KeyboardShortcuts
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit))
         {
-          hit.transform.gameObject.GetComponent<MyBlockInfo>().OpenKeyMapMenu();
+          var block = hit.transform.gameObject.GetComponent<BlockBehaviour>();
+          FindObjectOfType<KeyMapModeButton>().KeyMapOn();
+          BlockSelect(block);
+          BlockMapper.Open(block);
         }
       }
 
@@ -127,7 +130,7 @@ namespace spaar.Mods.KeyboardShortcuts
 
       // Don't react to block shortcuts when block settings are open to prevent
       // typing a slider value changing what block is selected
-      if (!Game.BlockInfoController.menuHolder.gameObject.activeSelf)
+      if (BlockMapper.CurrentInstance == null)
       {
         for (int i = 0; i < 9; i++)
         {
@@ -150,6 +153,31 @@ namespace spaar.Mods.KeyboardShortcuts
         if (tabKeys[i].Pressed())
         {
           tabController.OpenTab(tabIndices[i]);
+        }
+      }
+    }
+
+    private void BlockSelect(BlockBehaviour block)
+    {
+      if (block != null)
+      {
+        if (block != AddPiece.SelectedBlock)
+        {
+          SelectedController componentInParent = null;
+          if (AddPiece.SelectedBlock != null)
+          {
+            componentInParent = AddPiece.SelectedBlock.GetComponentInParent<SelectedController>();
+            if (componentInParent != null)
+            {
+              componentInParent.Deselect();
+            }
+          }
+          componentInParent = block.GetComponentInParent<SelectedController>();
+          if (componentInParent != null)
+          {
+            componentInParent.Select();
+          }
+          AddPiece.SelectedBlock = (GenericBlock)block;
         }
       }
     }
