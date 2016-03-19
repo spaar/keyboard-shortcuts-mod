@@ -10,7 +10,7 @@ namespace spaar.Mods.KeyboardShortcuts
     public override string DisplayName { get; } = "Keyboard Shortcuts";
     public override string Author { get; } = "spaar";
 
-    public override Version Version { get; } = new Version(1, 1, 0);
+    public override Version Version { get; } = new Version(1, 1, 1);
     public override string VersionExtra { get; } = "";
     public override string BesiegeVersion { get; } = "v0.27";
 
