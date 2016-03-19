@@ -58,7 +58,7 @@ namespace spaar.Mods.KeyboardShortcuts
        {
         new int[9] {  0,  1,  2,  4,  3, -1, -1, -1, -1 }, // Fundamentals
         new int[9] {  0,  1,  2,  3,  4,  5,  6,  7,  8 }, // Blocks
-        new int[9] { 11, 10,  0,  6,  4,  2,  7,  8,  1 }, // Locomotion
+        new int[9] { 11, 10,  0,  6,  4, 12,  2,  7,  8 }, // Locomotion
         new int[9] {  1,  2,  4,  3,  5,  7,  8,  0, -1 }, // Mechanical
         new int[9] {  0,  1,  4, 12,  5,  2, 13,  6, 10 }, // Weaponry
         new int[9] {  0,  1,  6,  2,  3,  5,  4, -1, -1 }, // Flight
@@ -71,7 +71,7 @@ namespace spaar.Mods.KeyboardShortcuts
       if (!Game.AddPiece) return;
       if (Game.IsSimulating) return;
 
-      // Debug code helpful for filling out blockIndices table
+      ////Debug code helpful for filling out blockIndices table
       //if (Input.GetKeyDown(KeyCode.N))
       //{
       //  var buttons = tabController.tabs[tabController.activeTab]
@@ -89,7 +89,8 @@ namespace spaar.Mods.KeyboardShortcuts
         if (Physics.Raycast(ray, out hit))
         {
           var myName = hit.transform.GetComponent<MyBlockInfo>().blockName;
-          for (int i = 0; i < Game.AddPiece.blockTypes.Length; i++)
+          Debug.Log(myName);
+          for (int i = 0; i < Game.MachineObjectTracker.AllPrefabs.Count; i++)
           {
             var type = Game.MachineObjectTracker.AllPrefabs[i];
             if ((type.GetComponent<MyBlockInfo>()
