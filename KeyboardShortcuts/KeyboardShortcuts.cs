@@ -58,10 +58,10 @@ namespace spaar.Mods.KeyboardShortcuts
        {
         new int[9] {  0,  1,  2,  4,  3, -1, -1, -1, -1 }, // Fundamentals
         new int[9] {  0,  1,  2,  3,  4,  5,  6,  7,  8 }, // Blocks
-        new int[9] { 11, 10,  0,  6,  4, 12,  2,  7,  8 }, // Locomotion
-        new int[9] {  1,  2,  4,  3,  5,  7,  8,  0, -1 }, // Mechanical
+        new int[9] {  9, 10,  0,  6,  4,  5,  2,  7,  8 }, // Locomotion
+        new int[9] {  1,  2,  4,  3,  5,  7,  6,  0, -1 }, // Mechanical
         new int[9] {  0,  1,  4, 12,  5,  2, 13,  6, 10 }, // Weaponry
-        new int[9] {  0,  1,  6,  2,  3,  5,  4, -1, -1 }, // Flight
+        new int[9] {  0,  1,  6,  2,  3,  4,  5, -1, -1 }, // Flight
         new int[9] {  0,  1,  2,  3,  4,  5, -1, -1, -1 }, // Armour
       };
     }
@@ -89,10 +89,9 @@ namespace spaar.Mods.KeyboardShortcuts
         if (Physics.Raycast(ray, out hit))
         {
           var myName = hit.transform.GetComponent<MyBlockInfo>().blockName;
-          Debug.Log(myName);
-          for (int i = 0; i < Game.MachineObjectTracker.AllPrefabs.Count; i++)
+          for (int i = 0; i < PrefabMaster.BlockPrefabs.Count; i++)
           {
-            var type = Game.MachineObjectTracker.AllPrefabs[i];
+            var type = PrefabMaster.BlockPrefabs[i].gameObject;
             if ((type.GetComponent<MyBlockInfo>()
               && type.GetComponent<MyBlockInfo>().blockName == myName)
               || (type.GetComponentInChildren<MyBlockInfo>()
@@ -164,19 +163,19 @@ namespace spaar.Mods.KeyboardShortcuts
       {
         if (block != AddPiece.SelectedBlock)
         {
-          SelectedController componentInParent = null;
+          BlockVisualController componentInParent = null;
           if (AddPiece.SelectedBlock != null)
           {
-            componentInParent = AddPiece.SelectedBlock.GetComponentInParent<SelectedController>();
+            componentInParent = AddPiece.SelectedBlock.GetComponentInParent<BlockVisualController>();
             if (componentInParent != null)
             {
-              componentInParent.Deselect();
+              componentInParent.SetNormal();
             }
           }
-          componentInParent = block.GetComponentInParent<SelectedController>();
+          componentInParent = block.GetComponentInParent<BlockVisualController>();
           if (componentInParent != null)
           {
-            componentInParent.Select();
+            componentInParent.SetSelected();
           }
           AddPiece.SelectedBlock = (GenericBlock)block;
         }
