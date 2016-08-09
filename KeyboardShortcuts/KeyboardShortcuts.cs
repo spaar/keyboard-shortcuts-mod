@@ -1,6 +1,7 @@
 ﻿using System;
 using spaar.ModLoader;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace spaar.Mods.KeyboardShortcuts
 {
@@ -38,10 +39,11 @@ namespace spaar.Mods.KeyboardShortcuts
         tabKeys[i] = Keybindings.Get("Tab " + (i + 1));
       }
 
-      OnLevelWasLoaded();
+      OnSceneLoaded(default(Scene), default(LoadSceneMode));
+      SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    private void OnLevelWasLoaded()
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
       if (!Game.AddPiece) return;
 
