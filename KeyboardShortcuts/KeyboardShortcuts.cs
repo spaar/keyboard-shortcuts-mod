@@ -28,10 +28,10 @@ namespace spaar.Mods.KeyboardShortcuts
       nextTab = Keybindings.Get("Next Tab");
       previousTab = Keybindings.Get("Previous Tab");
 
-      increaseTime = Keybindings.Get("Increase time speed");
-      decreaseTime = Keybindings.Get("Decrease time speed");
-      timeTo100 = Keybindings.Get("Set time speed to 100%");
-      timeTo0 = Keybindings.Get("Set time speed to 0%");
+      increaseTime = Keybindings.Get("Increase time scale");
+      decreaseTime = Keybindings.Get("Decrease time scale");
+      timeTo100 = Keybindings.Get("Set time scale to 100%");
+      timeTo0 = Keybindings.Get("Set time scale to 0%");
 
       blockKeys = new Key[9];
       for (int i = 0; i < 9; i++)

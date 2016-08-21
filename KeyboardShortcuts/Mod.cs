@@ -30,13 +30,13 @@ namespace spaar.Mods.KeyboardShortcuts
       Keybindings.AddKeybinding("Previous Tab",
         new Key(KeyCode.LeftShift, KeyCode.Tab));
 
-      Keybindings.AddKeybinding("Increase time speed",
+      Keybindings.AddKeybinding("Increase time scale",
         new Key(KeyCode.RightControl, KeyCode.RightArrow));
-      Keybindings.AddKeybinding("Decrease time speed",
+      Keybindings.AddKeybinding("Decrease time scale",
         new Key(KeyCode.RightControl, KeyCode.LeftArrow));
-      Keybindings.AddKeybinding("Set time speed to 100%",
+      Keybindings.AddKeybinding("Set time scale to 100%",
         new Key(KeyCode.RightShift, KeyCode.RightArrow));
-      Keybindings.AddKeybinding("Set time speed to 0%",
+      Keybindings.AddKeybinding("Set time scale to 0%",
         new Key(KeyCode.RightShift, KeyCode.LeftArrow));
 
       for (int i = 1; i < 10; i++)
