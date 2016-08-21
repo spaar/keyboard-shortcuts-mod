@@ -11,6 +11,7 @@ namespace spaar.Mods.KeyboardShortcuts
 
     private Key pipette, openSettings, nextTab, previousTab;
     private Key[] blockKeys, tabKeys;
+    private Key increaseTime, decreaseTime, timeTo0, timeTo100;
 
     private int[] tabIndices; // Mapping of Besiege-internal indices to the order
                               // in which they are actually displayed
@@ -26,6 +27,11 @@ namespace spaar.Mods.KeyboardShortcuts
       openSettings = Keybindings.Get("Open Block Settings");
       nextTab = Keybindings.Get("Next Tab");
       previousTab = Keybindings.Get("Previous Tab");
+
+      increaseTime = Keybindings.Get("Increase time speed");
+      decreaseTime = Keybindings.Get("Decrease time speed");
+      timeTo100 = Keybindings.Get("Set time speed to 100%");
+      timeTo0 = Keybindings.Get("Set time speed to 0%");
 
       blockKeys = new Key[9];
       for (int i = 0; i < 9; i++)
@@ -71,6 +77,30 @@ namespace spaar.Mods.KeyboardShortcuts
     private void Update()
     {
       if (!Game.AddPiece) return;
+
+      if (increaseTime.Pressed())
+      {
+        TimeSliderObject sliderObj = FindObjectOfType<TimeSliderObject>();
+        TimeSlider slider = FindObjectOfType<TimeSlider>();
+        sliderObj.SetPercentage(
+          Mathf.Clamp01((slider.delegateTimeScale + 0.1f) / 2f));
+      }
+      if (decreaseTime.Pressed())
+      {
+        TimeSliderObject sliderObj = FindObjectOfType<TimeSliderObject>();
+        TimeSlider slider = FindObjectOfType<TimeSlider>();
+        sliderObj.SetPercentage(
+          Mathf.Clamp01((slider.delegateTimeScale - 0.1f) / 2f));
+       }
+      if (timeTo100.Pressed())
+      {
+        FindObjectOfType<TimeSliderObject>().SetPercentage(0.5f);
+      }
+      if (timeTo0.Pressed())
+      {
+        FindObjectOfType<TimeSliderObject>().SetPercentage(0.0f);
+      }
+
       if (Game.IsSimulating) return;
 
       ////Debug code helpful for filling out blockIndices table
