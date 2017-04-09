@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using spaar.ModLoader;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -65,12 +67,12 @@ namespace spaar.Mods.KeyboardShortcuts
       blockIndices = new int[7][]
        {
         new int[9] {  0,  1,  2,  4,  3, -1, -1, -1, -1 }, // Fundamentals
-        new int[9] {  0,  1,  2,  3,  4,  5,  6,  7,  8 }, // Blocks
+        new int[9] {  0,  1,  11,  2,  3,  4,  5,  6,  7 }, // Blocks
         new int[9] {  9, 10,  0,  6,  4,  5,  2,  7,  8 }, // Locomotion
         new int[9] {  1,  2,  4,  3,  5,  7,  6,  0, -1 }, // Mechanical
-        new int[9] {  0,  1,  4, 12,  5,  2, 13,  6, 10 }, // Weaponry
+        new int[9] {  5,  1,  4, 12,  2, 13,  0,  6, 15 }, // Weaponry
         new int[9] {  0,  1,  6,  2,  3,  4,  5, -1, -1 }, // Flight
-        new int[9] {  0,  1,  2,  3,  4,  5, -1, -1, -1 }, // Armour
+        new int[9] {  0,  1,  2,  3,  4,  5,  6, -1, -1 }, // Armour
       };
     }
 
@@ -91,7 +93,7 @@ namespace spaar.Mods.KeyboardShortcuts
         TimeSlider slider = FindObjectOfType<TimeSlider>();
         sliderObj.SetPercentage(
           Mathf.Clamp01((slider.delegateTimeScale - 0.1f) / 2f));
-       }
+      }
       if (timeTo100.Pressed())
       {
         FindObjectOfType<TimeSliderObject>().SetPercentage(0.5f);
@@ -103,16 +105,18 @@ namespace spaar.Mods.KeyboardShortcuts
 
       if (Game.IsSimulating) return;
 
-      ////Debug code helpful for filling out blockIndices table
-      //if (Input.GetKeyDown(KeyCode.N))
-      //{
-      //  var buttons = tabController.tabs[tabController.activeTab]
-      //    .GetComponent<BlockMenuControl>().buttons;
-      //  for (int i = 0; i < buttons.Length; i++)
-      //  {
-      //    Debug.Log("buttons[" + i + "] = " + buttons[i]);
-      //  }
-      //}
+      //Debug code helpful for filling out blockIndices table
+#if DEBUG
+      if (Input.GetKeyDown(KeyCode.N))
+      {
+        var buttons = tabController.tabs[tabController.activeTab]
+          .GetComponent<BlockMenuControl>().buttons;
+        for (int i = 0; i < buttons.Length; i++)
+        {
+          Debug.Log("buttons[" + i + "] = " + buttons[i]);
+        }
+      }
+#endif
 
       if (pipette.Pressed())
       {
@@ -129,7 +133,7 @@ namespace spaar.Mods.KeyboardShortcuts
               || (type.GetComponentInChildren<MyBlockInfo>()
               && type.GetComponentInChildren<MyBlockInfo>().blockName == myName))
             {
-              Game.AddPiece.SetBlockType(i);
+              StartCoroutine(ExecuteWithDisabledGhost(() => { Game.AddPiece.SetBlockType(i); }));
               break;
             }
           }
@@ -172,9 +176,12 @@ namespace spaar.Mods.KeyboardShortcuts
               InternalToOrderedTabIndex(tabController.activeTab)][i];
             if (index != -1)
             {
-              tabController.tabs[tabController.activeTab]
-                .GetComponent<BlockMenuControl>()
-                .buttons[index].Set();
+              StartCoroutine(ExecuteWithDisabledGhost(() =>
+              {
+                tabController.tabs[tabController.activeTab]
+                  .GetComponent<BlockMenuControl>()
+                  .buttons[index].Set();
+              }));
             }
           }
         }
@@ -187,6 +194,19 @@ namespace spaar.Mods.KeyboardShortcuts
           tabController.OpenTab(tabIndices[i]);
         }
       }
+    }
+
+    private IEnumerator ExecuteWithDisabledGhost(Action toExecute)
+    {
+      AddPiece.ghostEnabled = false;
+      AddPiece.disableBlockPlacement = true;
+      yield return null; // Wait a frame for the ghost to disappear
+
+      toExecute.Invoke();
+
+      AddPiece.ghostEnabled = true;
+      AddPiece.disableBlockPlacement = false;
+      yield break;
     }
 
     private void BlockSelect(BlockBehaviour block)
